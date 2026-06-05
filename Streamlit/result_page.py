@@ -185,6 +185,6 @@ def show_page():
         color:#94A3B8;
         font-size:13px;
     ">
-        FitAI • Recommendation Engine • ML System
+        Created by Group 4 - Machine Learning - Final Project
     </div>
     """, unsafe_allow_html=True)

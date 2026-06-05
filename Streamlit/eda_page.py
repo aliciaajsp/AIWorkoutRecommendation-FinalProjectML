@@ -117,6 +117,16 @@ def show_page():
     with tab2:
         st.dataframe(fitness_df.describe(), use_container_width=True)
 
+    st.markdown("### 📉 Missing Values")
+
+    tab1, tab2 = st.tabs(["Exercise Dataset", "Fitness Dataset"])
+
+    with tab1:
+        st.dataframe(exercise_df.isnull().sum(), use_container_width=True)
+
+    with tab2:
+        st.dataframe(fitness_df.isnull().sum(), use_container_width=True)
+
     st.markdown("### 📊 Data Visualization")
 
     col1, col2 = st.columns(2)
@@ -156,6 +166,6 @@ def show_page():
         color:#94A3B8;
         font-size:13px;
     ">
-        FitAI • EDA Dashboard • Machine Learning Project
+        Created by Group 4 - Machine Learning - Final Project
     </div>
     """, unsafe_allow_html=True)
