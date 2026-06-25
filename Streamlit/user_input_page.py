@@ -1,15 +1,19 @@
 import streamlit as st
 from utils.style import load_css
 from pathlib import Path
+import pickle
 
-BASE_DIR = Path(__file__).resolve().parents[2]
+BASE_DIR = Path(__file__).resolve().parents[1]
 
 def load_model():
+
     model_dir = BASE_DIR / "Models"
-    exercise_df = model_dir / "exercise_df.pkl"
-    tfidf = model_dir / "tfidf.pkl"
-    tfidf_matrix = model_dir / "tfidf_matrix.pkl"
-    fitness_df = model_dir / "fitness_df.pkl"
+
+    exercise_df = pickle.load(open(model_dir / "exercise_df.pkl", "rb"))
+    tfidf = pickle.load(open(model_dir / "tfidf.pkl", "rb"))
+    tfidf_matrix = pickle.load(open(model_dir / "tfidf_matrix.pkl", "rb"))
+    fitness_df = pickle.load(open(model_dir / "fitness_df.pkl", "rb"))
+
     return exercise_df, tfidf, tfidf_matrix, fitness_df
 
 
@@ -142,19 +146,84 @@ def show_page():
                 1, 10, 5
             )
 
-        workout_type = "cardio" if bmi > 25 else "strength"
+        if bmi < 18.5:
+
+            if intensity <= 3:
+                workout_type = "stretching"
+            elif intensity <= 7:
+                workout_type = "strength"
+            else:
+                workout_type = "strength"
+
+        elif bmi < 25:
+
+            if intensity <= 3:
+                workout_type = "stretching"
+            elif intensity <= 7:
+                workout_type = "strength"
+            else:
+                workout_type = "powerlifting"
+
+        elif bmi < 30:
+
+            if intensity <= 3:
+                workout_type = "cardio"
+            elif intensity <= 7:
+                workout_type = "cardio"
+            else:
+                workout_type = "plyometrics"
+
+        else:
+            if intensity <= 3:
+                workout_type = "cardio"
+            elif intensity <= 7:
+                workout_type = "cardio"
+            else:
+                workout_type = "cardio"
+
 
         if intensity <= 3:
             level = "beginner"
+
         elif intensity <= 7:
             level = "intermediate"
+
         else:
             level = "expert"
 
-        body_part = "legs"
-        equipment = "body only"
+        if workout_type == "strength":
+            body_part = "chest"
 
-        generated_profile = f"{workout_type} {body_part} {equipment} {level}"
+        elif workout_type == "cardio":
+            body_part = "legs"
+
+        elif workout_type == "stretching":
+            body_part = "full body"
+
+        elif workout_type == "plyometrics":
+            body_part = "legs"
+
+        elif workout_type == "powerlifting":
+            body_part = "back"
+
+        if workout_type in ["cardio", "stretching"]:
+            equipment = "body only"
+
+        elif workout_type == "strength":
+            equipment = "dumbbell" if intensity <= 5 else "barbell"
+
+        elif workout_type == "plyometrics":
+            equipment = "medicine ball"
+
+        elif workout_type == "powerlifting":
+            equipment = "barbell"
+
+        generated_profile = (
+            f"{workout_type} "
+            f"{body_part} "
+            f"{equipment} "
+            f"{level}"
+        )
 
         st.markdown("---")
 
